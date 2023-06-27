@@ -1,5 +1,5 @@
 # Blog-Website
-This is a full stack blog website where the admin can login and create posts.
+This is a full stack blog website where the user can view the blog posts and the administrator can login and create posts.
 
 Visit: https://blog-website-tqqn.onrender.com/ to check it out and play around with it yourself.
 
