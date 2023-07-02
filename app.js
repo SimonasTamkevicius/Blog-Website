@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
+const mongoose = require("mongoose");
 var _ = require('lodash');
 
 const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
@@ -21,8 +22,24 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
+mongoose.connect("mongodb+srv://admin-simonas:vFkKwGrkLjh2CXD0@cluster1.prdh7mf.mongodb.net/?retryWrites=true&w=majority");
+
+const postSchema = {
+  title: String,
+  text: String
+}
+
+const Post = mongoose.model("Post", postSchema);
+
 app.get("/", function(req, res) {
-  res.render("home", {homeContent: homeStartingContent, posts: posts, login: login});
+
+  Post.find({}).exec()
+    .then(function(postList) {
+        res.render("home", {homeContent: homeStartingContent, posts: postList, login: login});
+    })
+    .catch(function(err) {
+      console.error("Error retrieving items:", err);
+    });
 })
 
 app.get("/about", function(req, res) {
@@ -41,12 +58,16 @@ app.get("/compose", function(req, res) {
 })
 
 app.post("/compose", function(req, res) {
-  const post = {
-    title: req.body.postTitle,
-    text: req.body.postText
-  }
 
-  posts.push(post);
+  const postTitle = req.body.postTitle;
+  const postText = req.body.postText;
+
+  const post = new Post ({
+    title: postTitle,
+    text: postText
+  })
+
+  post.save();
   res.redirect("/");
 })
 
@@ -85,6 +106,12 @@ app.post("/logout",function(req, res) {
   }
 })
 
+let port = process.env.PORT;
+
+if (port === null || port === "") {
+  port = 3000;
+}
+
 app.listen(3000, function() {
-  console.log("Server started on port 3000");
+  console.log("Server has started successfully.");
 });
