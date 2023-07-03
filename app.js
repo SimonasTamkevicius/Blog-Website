@@ -59,7 +59,7 @@ app.get("/compose", function(req, res) {
 
 app.post("/compose", function(req, res) {
 
-  const postTitle = req.body.postTitle;
+  const postTitle = _.upperFirst (req.body.postTitle);
   const postText = req.body.postText;
 
   const post = new Post ({
@@ -72,7 +72,7 @@ app.post("/compose", function(req, res) {
 })
 
 app.get("/posts/:post", function(req, res) {
-  let postParam = _.lowerCase(req.params.post);
+  let postParam = _.upperFirst(req.params.post);
   console.log(postParam);
 
   Post.findOne({ title: postParam })
