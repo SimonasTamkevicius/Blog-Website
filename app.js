@@ -106,7 +106,7 @@ app.post("/logout",function(req, res) {
   }
 })
 
-const port = Process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 app.listen(port, function() {
   console.log("Server has started successfully.");
