@@ -72,9 +72,10 @@ app.post("/compose", function(req, res) {
 })
 
 app.get("/posts/:post", function(req, res) {
-  const postParam = _.lowerCase(req.params.post);
+  let postParam = _.lowerCase(req.params.post);
+  console.log(postParam);
 
-  Post.findOne({ title: postParam.title })
+  Post.findOne({ title: postParam })
     .then(function(post) {
       if (post) {
         res.render("post", { postTitle: post.title, postText: post.text, login: login });
