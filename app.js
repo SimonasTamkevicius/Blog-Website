@@ -76,13 +76,13 @@ app.get("/posts/:post", function(req, res) {
   console.log(postParam);
 
   Post.findOne({ title: postParam })
-    .then(function(post) {
-      if (post) {
-        res.render("post", { postTitle: post.title, postText: post.text, login: login });
+    .then(function(postCustom) {
+      if (postCustom) {
+        res.render("post", { postTitle: postCustom.title, postText: postCustom.text, login: login });
       } else {
         console.log("Match not found!");
         // Handle the case when the post is not found
-        res.redirect("/");
+        // res.redirect("/");
       }
     })
     .catch(function(err) {
