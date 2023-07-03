@@ -71,18 +71,26 @@ app.post("/compose", function(req, res) {
   res.redirect("/");
 })
 
-app.get("/posts/:post", function(req,res) {
+app.get("/posts/:post", function(req, res) {
+  const postParam = _.lowerCase(req.params.post);
 
-  let postParam = _.lowerCase(req.params.post);
-  
-  posts.forEach(function(post){
-    if (_.lowerCase(post.title) === postParam){
-      res.render("post", {postTitle: post.title, postText: post.text, login: login})
-    } else {
-      console.log("Match not found!");
-    }
-  });
-})
+  Post.findOne({ title: postParam })
+    .then(function(post) {
+      if (post) {
+        res.render("post", { postTitle: post.title, postText: post.text, login: login });
+      } else {
+        console.log("Match not found!");
+        // Handle the case when the post is not found
+        res.redirect("/");
+      }
+    })
+    .catch(function(err) {
+      console.error("Error retrieving post:", err);
+      // Handle the error, display an error page, or redirect to a relevant page
+      res.redirect("/");
+    });
+});
+
 
 app.get("/login", function(req, res) {
   res.render("login");
